@@ -1,0 +1,31 @@
+# https://github.com/awesome-containers/static-bash
+ARG STATIC_BASH_VERSION=5.2.15
+ARG STATIC_BASH_IMAGE=ghcr.io/awesome-containers/static-bash
+
+# https://github.com/awesome-containers/static-cpc
+ARG STATIC_CPC_VERSION=1.9.1
+ARG STATIC_CPC_IMAGE=ghcr.io/awesome-containers/static-cpc
+
+# https://github.com/awesome-containers/alpine-build-essential
+ARG BUILD_ESSENTIAL_VERSION=3.17
+ARG BUILD_ESSENTIAL_IMAGE=ghcr.io/awesome-containers/alpine-build-essential
+
+
+FROM $STATIC_BASH_IMAGE:$STATIC_BASH_VERSION-slim AS static-bash
+FROM $STATIC_CPC_IMAGE:$STATIC_CPC_VERSION AS static-cpc
+FROM $BUILD_ESSENTIAL_IMAGE:$BUILD_ESSENTIAL_VERSION AS build
+
+WORKDIR /src/cpc
+COPY --from=static-cpc /bin/cpc ./
+
+RUN set -xeu; \
+    upx --no-progress --no-color cpc; \
+    upx -t --no-progress --no-color cpc; \
+    chmod -cR 755 cpc; \
+    chown -cR 0:0 cpc; \
+    ! ldd cpc && :; \
+    ./cpc --version
+
+# slim static cpc image
+FROM static-bash
+COPY --from=build /src/cpc/cpc/ /bin/
