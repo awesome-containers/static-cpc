@@ -25,8 +25,8 @@ docker.io/awesomecontainers/static-cpc:1.9.1-slim
 ```
 
 [cpc]: https://github.com/probablykasper/cpc
-[Bash]: https://cpchub.com/awesome-containers/static-bash
-[UPX]: https://upx.cpchub.io/
+[Bash]: https://github.com/awesome-containers/static-bash
+[UPX]: https://upx.github.io/
 
 <!--
 ```bash
